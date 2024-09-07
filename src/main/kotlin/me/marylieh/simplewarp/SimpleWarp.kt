@@ -46,7 +46,11 @@ class SimpleWarp : JavaPlugin() {
     }
 
     override fun onDisable() {
-        Config.save()
+
+        if (!(Config.getConfig().getBoolean("AllowConfigReload"))) {
+            Config.save()
+        }
+
         PermissionFile.savePermissions()
     }
 
@@ -58,6 +62,7 @@ class SimpleWarp : JavaPlugin() {
         val warpVersionCommand = getCommand("warpversion") ?: error("Couldn't get warpversion command! This should not happen!")
         val positionCommand = getCommand("position") ?: error("Couldn't get position command! This should not happen!")
         val permissionManagerCommand = getCommand("pm") ?: error("Couldn't get permissions manager command! This should not happen!")
+        val warpreloadCommand = getCommand("warpreload") ?: error("Couldn't get permissions manager command! This should not happen!")
         setWarpCommand.setExecutor(SetWarpCommandExecutor())
         delWarpCommand.setExecutor(DelWarpCommandExecutor())
         warpCommand.setExecutor(WarpCommandExecutor())
@@ -65,6 +70,7 @@ class SimpleWarp : JavaPlugin() {
         warpVersionCommand.setExecutor(WarpVersionCommandExecutor())
         positionCommand.setExecutor(PositionCommandExecutor())
         permissionManagerCommand.setExecutor(PermissionManagerCommandExecutor())
+        warpreloadCommand.setExecutor(WarpreloadCommandExecutor())
         warpCommand.setTabCompleter(WarpTabCompleter())
         delWarpCommand.setTabCompleter(WarpTabCompleter())
     }
@@ -98,6 +104,9 @@ class SimpleWarp : JavaPlugin() {
         }
         if (Config.getConfig().get("IntegratedPermissionSystem") == null) {
             Config.getConfig().set("IntegratedPermissionSystem", false)
+        }
+        if (Config.getConfig().get("AllowConfigReload") == null) {
+            Config.getConfig().set("AllowConfigReload", false)
         }
         Config.save()
     }
